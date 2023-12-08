@@ -1,6 +1,5 @@
-﻿# Main Goal
-Recompressing videos with an approximate input size and output size E.g 6:1.
-Small Handbrake competitor.
+# Batch-Recompressor
+An application for batch recompressing videos with an approximate input size and output size E.g 6:1.
 
 # To Do List:
 - [X] Default video codec should be AV1, but should also support H.265 (HEVC)
@@ -21,12 +20,5 @@ Small Handbrake competitor.
 - [X] Automatic file overriding if output file has the incorrect ratio
 - [ ] Compatibility Check (Certain Container does not work with specific codecs)
 
-# Component Hierarchy 
-## Form 
-  ### Main Tab
-    1. File list
-    2. Settings Panel (Own class)
-    3. `Start Batch Recompression` Button
-
-  ### Jobs Panel Tab
-    1. Stop / Cancel Jobs
+## License 
+This project is licensed under the [MIT License](LICENSE).
