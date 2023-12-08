@@ -13,8 +13,6 @@ namespace Batch_Recompressor
         {
             InstallRequiredBinaries().Wait();
 
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             Application.Run(new RecompressForm());
         }
@@ -22,7 +20,7 @@ namespace Batch_Recompressor
         static async Task InstallRequiredBinaries()
         {
             string localApplicationData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            string binaryDirectory = Path.Combine(localApplicationData, "Batch-Recompress");
+            string binaryDirectory = Path.Combine(localApplicationData, "Batch-Recompressor");
             FFmpeg.SetExecutablesPath(binaryDirectory);
 
             if (!Directory.Exists(binaryDirectory))

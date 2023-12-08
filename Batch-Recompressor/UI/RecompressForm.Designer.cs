@@ -1,4 +1,5 @@
 ﻿using Batch_Recompressor.Core;
+using Batch_Recompressor.UI;
 
 namespace Batch_Recompressor
 {
@@ -38,17 +39,17 @@ namespace Batch_Recompressor
             pathDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             queueContextMenu = new ContextMenuStrip(components);
             removeToolStripMenuItem = new ToolStripMenuItem();
-            progressBarGridViewColumn = new UI.ProgressBarColumn();
+            progressBarGridViewColumn = new ProgressBarColumn();
             inputSizeDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             outputSizeDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            ffmpegJobBindingSource = new BindingSource(components);
+            jobsBindingSource = new BindingSource(components);
             addFileButton = new Button();
             openFileDialog = new OpenFileDialog();
-            settingsPanel = new UI.SettingsPanel();
+            settingsPanel = new SettingsPanel();
             startButton = new Button();
             ((System.ComponentModel.ISupportInitialize)queueDataGrid).BeginInit();
             queueContextMenu.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)ffmpegJobBindingSource).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)jobsBindingSource).BeginInit();
             SuspendLayout();
             // 
             // queueDataGrid
@@ -75,7 +76,7 @@ namespace Batch_Recompressor
             queueDataGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             queueDataGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             queueDataGrid.Columns.AddRange(new DataGridViewColumn[] { pathDataGridViewTextBoxColumn, progressBarGridViewColumn, inputSizeDataGridViewTextBoxColumn, outputSizeDataGridViewTextBoxColumn });
-            queueDataGrid.DataSource = ffmpegJobBindingSource;
+            queueDataGrid.DataSource = jobsBindingSource;
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
@@ -116,7 +117,7 @@ namespace Batch_Recompressor
             // 
             pathDataGridViewTextBoxColumn.ContextMenuStrip = queueContextMenu;
             pathDataGridViewTextBoxColumn.DataPropertyName = "Path";
-            pathDataGridViewTextBoxColumn.FillWeight = 50F;
+            pathDataGridViewTextBoxColumn.FillWeight = 30F;
             pathDataGridViewTextBoxColumn.HeaderText = "Path";
             pathDataGridViewTextBoxColumn.MinimumWidth = 8;
             pathDataGridViewTextBoxColumn.Name = "pathDataGridViewTextBoxColumn";
@@ -167,10 +168,6 @@ namespace Batch_Recompressor
             outputSizeDataGridViewTextBoxColumn.Name = "outputSizeDataGridViewTextBoxColumn";
             outputSizeDataGridViewTextBoxColumn.ReadOnly = true;
             outputSizeDataGridViewTextBoxColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
-            // 
-            // ffmpegJobBindingSource
-            // 
-            ffmpegJobBindingSource.DataSource = typeof(RecompressTask);
             // 
             // addFileButton
             // 
@@ -224,22 +221,22 @@ namespace Batch_Recompressor
             DragEnter += HandleDragEnter;
             ((System.ComponentModel.ISupportInitialize)queueDataGrid).EndInit();
             queueContextMenu.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)ffmpegJobBindingSource).EndInit();
+            ((System.ComponentModel.ISupportInitialize)jobsBindingSource).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
         private DataGridView queueDataGrid;
-        private BindingSource ffmpegJobBindingSource;
+        private BindingSource jobsBindingSource;
         private Button addFileButton;
         private OpenFileDialog openFileDialog;
         private ContextMenuStrip queueContextMenu;
         private ToolStripMenuItem removeToolStripMenuItem;
         private UI.SettingsPanel settingsPanel;
+        private Button startButton;
         private DataGridViewTextBoxColumn pathDataGridViewTextBoxColumn;
-        private UI.ProgressBarColumn progressBarGridViewColumn;
+        private ProgressBarColumn progressBarGridViewColumn;
         private DataGridViewTextBoxColumn inputSizeDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn outputSizeDataGridViewTextBoxColumn;
-        private Button startButton;
     }
 }

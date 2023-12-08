@@ -26,6 +26,12 @@ namespace Batch_Recompressor
 
         private void SetupSpecificColumnStyles()
         {
+            // Doing it via the designer causes it to auto-generate columns,
+            // even with auto generate columns set to false..
+            queueDataGrid.AutoGenerateColumns = false;
+            jobsBindingSource.DataMember = "Tasks";
+            jobsBindingSource.DataSource = typeof(QueuedTasksRelations);
+
             DataGridViewCellStyle leftAligned = new()
             {
                 Alignment = DataGridViewContentAlignment.MiddleLeft
@@ -48,16 +54,14 @@ namespace Batch_Recompressor
         {
             if (openFileDialog.ShowDialog() == DialogResult.OK)
                 foreach (string filePath in openFileDialog.FileNames)
-                {
-                    ffmpegJobBindingSource.Add(
-                        new RecompressTask(filePath, SettingsPanel.GlobalJobSettings.Clone()));
-                }
+                    jobsBindingSource.Add(new RecompressTask(filePath));
         }
 
         private void HandleDragEnter(object sender, DragEventArgs e)
         {
-            if (e.Data is null) 
+            if (e.Data is null)
                 return;
+
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
                 e.Effect = DragDropEffects.All;
             else
@@ -66,21 +70,18 @@ namespace Batch_Recompressor
 
         private void HandleDragDrop(object sender, DragEventArgs e)
         {
-            if (e.Data is null) 
+            if (e.Data is null)
                 return;
 
             string[] paths = (string[])e.Data.GetData(DataFormats.FileDrop, false);
             foreach (string path in paths)
             {
                 string extension = Path.GetExtension(path);
-                Debug.WriteLine(extension);
-
                 if (string.IsNullOrEmpty(extension) ||
                     !AllowedFileExtensions.Contains(extension))
                     continue;
 
-                ffmpegJobBindingSource.Add(
-                    new RecompressTask(path, SettingsPanel.GlobalJobSettings.Clone()));
+                jobsBindingSource.Add(new RecompressTask(path));
             }
         }
 
@@ -89,7 +90,7 @@ namespace Batch_Recompressor
 
         private void RemoveSelectedJobs(object sender, EventArgs e)
         {
-            if (queueDataGrid.SelectedRows.Count < 1) 
+            if (queueDataGrid.SelectedRows.Count < 1)
                 return;
 
             DialogResult result = MessageBox.Show(
@@ -109,10 +110,12 @@ namespace Batch_Recompressor
                 //if (result == DialogResult.Yes)
                 //    job.Delete();
 
-                ffmpegJobBindingSource.Remove(job);
+                jobsBindingSource.Remove(job);
             }
         }
 
         #endregion
+
+
     }
 }

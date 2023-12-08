@@ -1,4 +1,6 @@
-﻿namespace Batch_Recompressor.Core
+﻿using System.Text.RegularExpressions;
+
+namespace Batch_Recompressor.Core
 {
     public enum VideoCodec
     {
@@ -32,7 +34,7 @@
 
         public string? PreprocessCommand { get; set; }
         public VideoCodec VideoCodec { get; set; }
-        public bool ShouldTwoPassEncode { get; set; }
+        public bool UseTwoPassEncode { get; set; }
         public bool UseConstantRateFactor { get; set; }
         public double ShrinkFactor { get; set; }
         public Container Container { get; set; }
@@ -51,6 +53,23 @@
         public TaskSettings Clone()
         {
             return (TaskSettings)MemberwiseClone();
+        }
+
+        public void Validate()
+        {
+            if (!IsValidPreOrPostProcessCommand(PreprocessCommand))
+                throw new InvalidOperationException("Postprocess command missing input or output placeholder");
+
+            if (!IsValidPreOrPostProcessCommand(PostprocessCommand))
+                throw new InvalidOperationException("Preporcess command missing input or output placeholder");
+        }
+
+        private static bool IsValidPreOrPostProcessCommand(string? command)
+        {
+            return command is null ||
+                Regex.IsMatch(command, "{input}.*{output}",
+                    RegexOptions.IgnoreCase | RegexOptions.Multiline
+                );
         }
     }
 }

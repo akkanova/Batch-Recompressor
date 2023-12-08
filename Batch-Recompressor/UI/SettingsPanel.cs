@@ -27,7 +27,7 @@ namespace Batch_Recompressor.UI
 
             // Video Codec Settings
             GlobalJobSettings.VideoCodec = (VideoCodec)videoCodecSelection.SelectedIndex;
-            GlobalJobSettings.ShouldTwoPassEncode = twoPassEncodeCheckBox.Checked;
+            GlobalJobSettings.UseTwoPassEncode = twoPassEncodeCheckBox.Checked;
             GlobalJobSettings.Container = (Container)videoContainerSelection.SelectedIndex;
             GlobalJobSettings.UseConstantRateFactor = videoBitrateModeSelection.SelectedIndex != 0;
             GlobalJobSettings.ShrinkFactor = (float)shrinkFactorInput.Value;

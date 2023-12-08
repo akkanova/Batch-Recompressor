@@ -1,10 +1,9 @@
-﻿using Batch_Recompressor.AllPurpose;
-using Batch_Recompressor.Core;
+﻿using Batch_Recompressor.Core;
 using System.ComponentModel;
 
 namespace Batch_Recompressor.UI
 {
-    public class ProgressBarColumn : DataGridViewColumn
+    internal class ProgressBarColumn : DataGridViewColumn
     {
         public ProgressBarColumn()
         {
@@ -12,7 +11,7 @@ namespace Batch_Recompressor.UI
         }
     }
 
-    public class ProgressBarCell : DataGridViewImageCell
+    internal class ProgressBarCell : DataGridViewImageCell
     {
         public static Color ProgressBarColor { get; }
         public static Image EmptyImage { get; }
@@ -73,7 +72,7 @@ namespace Batch_Recompressor.UI
 
             // Draw Text (Middle Center)
             string text = status.State != TaskState.Ongoing
-                ? Misc.ToSentenceCase(status.State.ToString())
+                ? TaskStateToString(status.State)
                 : status.Progress.ToString();
 
             Size textSize = TextRenderer.MeasureText(text, cellStyle.Font);
@@ -84,6 +83,16 @@ namespace Batch_Recompressor.UI
                 text, cellStyle.Font,
                 new SolidBrush(cellStyle.ForeColor),
                 textPosX, textPosY);
+        }
+
+        private static string TaskStateToString(TaskState state)
+        {
+            return state switch
+            {
+                TaskState.FirstPass => "First Pass",
+                TaskState.SecondPass => "Second Pass",
+                _ => state.ToString(),
+            };
         }
     }
 }
