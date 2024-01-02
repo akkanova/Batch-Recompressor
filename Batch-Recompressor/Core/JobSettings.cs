@@ -24,44 +24,44 @@ namespace Batch_Recompressor.Core
         MKV
     }
 
-    public class TaskSettings
+    public class JobSettings
     {
         public static string DefaultOutputFolder { get; } 
 
-        static TaskSettings() {
+        static JobSettings() {
             DefaultOutputFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
         }
 
-        public string? PreprocessCommand { get; set; }
-        public VideoCodec VideoCodec { get; set; }
-        public bool UseTwoPassEncode { get; set; }
+        public string? PreprocessCommand  { get; set; }
+        public VideoCodec VideoCodec      { get; set; }
+        public bool UseTwoPassEncode      { get; set; }
         public bool UseConstantRateFactor { get; set; }
-        public double ShrinkFactor { get; set; }
-        public Container Container { get; set; }
-        public AudioCodec AudioCodec { get; set; }
-        public uint AudioBitrate { get; set; }
-        public string? CustomArgument { get; set; }
+        public double ShrinkFactor        { get; set; }
+        public Container Container        { get; set; }
+        public AudioCodec AudioCodec      { get; set; }
+        public uint AudioBitrate          { get; set; }
+        public string? CustomArgument     { get; set; }
         public string? PostprocessCommand { get; set; }
-        public string OutputFolder { get; set; }
+        public string OutputFolder        { get; set; }
 
-        public TaskSettings()
+        public JobSettings()
         {
             OutputFolder = DefaultOutputFolder;
             ShrinkFactor = 1.0;
         }
 
-        public TaskSettings Clone()
+        public JobSettings Clone()
         {
-            return (TaskSettings)MemberwiseClone();
+            return (JobSettings) MemberwiseClone();
         }
 
         public void Validate()
         {
             if (!IsValidPreOrPostProcessCommand(PreprocessCommand))
-                throw new InvalidOperationException("Postprocess command missing input or output placeholder");
+                throw new InvalidJobSettings("Preprocess command missing input or output placeholder");
 
             if (!IsValidPreOrPostProcessCommand(PostprocessCommand))
-                throw new InvalidOperationException("Preporcess command missing input or output placeholder");
+                throw new InvalidJobSettings("Postprocess command missing input or output placeholder");
         }
 
         private static bool IsValidPreOrPostProcessCommand(string? command)
@@ -71,5 +71,12 @@ namespace Batch_Recompressor.Core
                     RegexOptions.IgnoreCase | RegexOptions.Multiline
                 );
         }
+    }
+
+    public class InvalidJobSettings : Exception
+    {
+        public InvalidJobSettings() { }
+        public InvalidJobSettings(string message) : base(message) { }
+        public InvalidJobSettings(string message, Exception inner) : base(message, inner) { }
     }
 }

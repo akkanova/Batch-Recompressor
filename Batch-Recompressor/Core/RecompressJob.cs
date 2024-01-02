@@ -1,8 +1,9 @@
-﻿using Batch_Recompressor.AllPurpose;
+﻿using Batch_Recompressor.Common;
+using Xabe.FFmpeg;
 
 namespace Batch_Recompressor.Core
 {
-    public enum TaskState
+    public enum JobState
     {
         Queued,
         Preprocess,
@@ -13,20 +14,19 @@ namespace Batch_Recompressor.Core
         Completed
     }
  
-    // Used by DataGridView progress column
-    public class TaskStatus
+    public class JobStatus
     {
         public int Progress { get; set; }
-        public TaskState State { get; set; }
+        public JobState State { get; set; }
     }
 
-    public class RecompressTask
+    public class RecompressJob
     {
         private readonly ulong _inputFileSize;
         private readonly ulong _outputFileSize;
         private readonly object _lock;
         
-        public RecompressTask(string path)
+        public RecompressJob(string path)
         {
             _inputFileSize = (ulong) new FileInfo(path).Length;
             _lock = new object();
@@ -34,8 +34,8 @@ namespace Batch_Recompressor.Core
             Path = path;
         }
 
-        public TaskSettings? Settings { get; private set; }
-        public TaskStatus Status { get; }
+        public JobSettings? Settings { get; private set; }
+        public JobStatus Status { get; }
         public string Path { get; }
 
 
@@ -44,9 +44,7 @@ namespace Batch_Recompressor.Core
             get 
             { 
                 lock (_lock)
-                {
-                    return Misc.FileSizeToString(_inputFileSize); 
-                }
+                    return Misc.FileSizeToString(_inputFileSize);
             }
         }
 
@@ -55,12 +53,17 @@ namespace Batch_Recompressor.Core
             get
             {
                 lock (_lock)
-                {
                     return _outputFileSize != 0
                         ? Misc.FileSizeToString(_outputFileSize)
                         : string.Empty;
-                }
             }
+        }
+
+        public async Task Run(
+            JobSettings settings,
+            CancellationToken token = default, 
+            IProgress<JobStatus>? progress = null
+        ) {
         }
     }
 }

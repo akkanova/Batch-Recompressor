@@ -359,7 +359,7 @@
             customArgumentsCheckBox.Size = new Size(22, 21);
             customArgumentsCheckBox.TabIndex = 10;
             customArgumentsCheckBox.UseVisualStyleBackColor = true;
-            customArgumentsCheckBox.CheckedChanged += AllowCustomArguments_CheckedChanged;
+            customArgumentsCheckBox.CheckedChanged += CustomArgumentsCheckBox_CheckedChanged;
             // 
             // outputFolderDialog
             // 

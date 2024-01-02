@@ -4,65 +4,61 @@ namespace Batch_Recompressor.UI
 {
     public partial class SettingsPanel : UserControl
     {
-        public static TaskSettings GlobalJobSettings { get; }
-
-        static SettingsPanel()
-        {
-            GlobalJobSettings = new();
-        }
-
         public SettingsPanel()
         {
             InitializeComponent();
             SetupDefaultValues();
         }
 
-        public void SaveValuesToGlobalSettings()
-        {
-            static string? ConvertToNullIfEmpty(string input) =>
-                string.IsNullOrEmpty(input) ? null : input;
-
-            // Preprocess
-            GlobalJobSettings.PreprocessCommand = ConvertToNullIfEmpty(preprocessInput.Text);
-
-            // Video Codec Settings
-            GlobalJobSettings.VideoCodec = (VideoCodec)videoCodecSelection.SelectedIndex;
-            GlobalJobSettings.UseTwoPassEncode = twoPassEncodeCheckBox.Checked;
-            GlobalJobSettings.Container = (Container)videoContainerSelection.SelectedIndex;
-            GlobalJobSettings.UseConstantRateFactor = videoBitrateModeSelection.SelectedIndex != 0;
-            GlobalJobSettings.ShrinkFactor = (float)shrinkFactorInput.Value;
-
-            // Audio Codec Settings
-            GlobalJobSettings.AudioBitrate = (uint)audioBitrateInput.Value;
-
-            // Custom Arguments
-            GlobalJobSettings.CustomArgument =
-                customArgumentsCheckBox.Checked ? ConvertToNullIfEmpty(customArgumentsInput.Text) : null;
-
-            // Output
-            GlobalJobSettings.OutputFolder = outputFolderInput.Text;
-
-            // Postprocess
-            GlobalJobSettings.PostprocessCommand = ConvertToNullIfEmpty(postprocessInput.Text);
-        }
-
         private void SetupDefaultValues()
         {
-            videoCodecSelection.SelectedIndex = 0;
-            videoContainerSelection.SelectedIndex = 0;
+            videoCodecSelection.SelectedIndex       = 0;
+            videoContainerSelection.SelectedIndex   = 0;
             videoBitrateModeSelection.SelectedIndex = 0;
-            audioCodecSelection.SelectedIndex = 0;
-            outputOverwriteSelection.SelectedIndex = 0;
-            outputFolderInput.SelectedText = GlobalJobSettings.OutputFolder;
+            audioCodecSelection.SelectedIndex       = 0;
+            outputOverwriteSelection.SelectedIndex  = 0;
+            outputFolderInput.SelectedText = JobSettings.DefaultOutputFolder;
+        }
+
+        public JobSettings GetCurrentSettings()
+        {
+            static string? ConvertToNullIfEmptyOrWhiteSpace(string input) =>
+                string.IsNullOrWhiteSpace(input) ? null : input;
+
+            return new JobSettings()
+            {
+                // Preprocess
+                PreprocessCommand = ConvertToNullIfEmptyOrWhiteSpace(preprocessInput.Text),
+
+                // Video Codec Settings
+                VideoCodec            = (VideoCodec) videoCodecSelection.SelectedIndex,
+                UseTwoPassEncode      = twoPassEncodeCheckBox.Checked,
+                Container             = (Container) videoContainerSelection.SelectedIndex,
+                UseConstantRateFactor = videoBitrateModeSelection.SelectedIndex != 0,
+                ShrinkFactor          = (float) shrinkFactorInput.Value,
+
+                // Audio Codec Settings
+                AudioCodec   = (AudioCodec) audioCodecSelection.SelectedIndex,
+                AudioBitrate = (uint) audioBitrateInput.Value,
+
+                // Custom Arguments
+                CustomArgument = customArgumentsCheckBox.Checked
+                    ? ConvertToNullIfEmptyOrWhiteSpace(customArgumentsInput.Text) : null,
+
+                // Output
+                OutputFolder = outputFolderInput.Text,
+
+                // Postprocess
+                PostprocessCommand = ConvertToNullIfEmptyOrWhiteSpace(postprocessInput.Text),
+            };
         }
 
         private void AudioCodec_SelectionChangeCommitted(object sender, EventArgs e)
         {
             audioBitrateInput.Enabled = audioCodecSelection.SelectedIndex != 0;
-            GlobalJobSettings.AudioCodec = (AudioCodec)audioCodecSelection.SelectedIndex;
         }
 
-        private void AllowCustomArguments_CheckedChanged(object sender, EventArgs e)
+        private void CustomArgumentsCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             customArgumentsInput.Enabled = customArgumentsCheckBox.Checked;
         }
@@ -70,10 +66,7 @@ namespace Batch_Recompressor.UI
         private void OutputFolderButton_Click(object sender, EventArgs e)
         {
             if (outputFolderDialog.ShowDialog() == DialogResult.OK)
-            {
                 outputFolderInput.Text = outputFolderDialog.SelectedPath;
-                GlobalJobSettings.OutputFolder = outputFolderInput.Text;
-            }
         }
     }
 }

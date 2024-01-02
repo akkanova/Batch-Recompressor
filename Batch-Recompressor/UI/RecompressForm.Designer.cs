@@ -203,6 +203,7 @@ namespace Batch_Recompressor
             startButton.TabIndex = 16;
             startButton.Text = "Start Batch";
             startButton.UseVisualStyleBackColor = true;
+            startButton.Click += StartButton_Click;
             // 
             // RecompressForm
             // 

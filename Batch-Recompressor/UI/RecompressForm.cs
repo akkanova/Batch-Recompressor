@@ -1,25 +1,15 @@
 using Batch_Recompressor.Core;
-using Batch_Recompressor.UI;
-using System.Diagnostics;
 
 namespace Batch_Recompressor
 {
     public partial class RecompressForm : Form
     {
-        public static List<string> AllowedFileExtensions { get; }
-
-        static RecompressForm()
-        {
-            AllowedFileExtensions = new() {
-                ".3gp", ".adts", ".flac",
-                ".mkv", ".mpeg", ".mp4",
-                ".ogg", ".mov",  ".webm"
-            };
-        }
-
+        private readonly JobsManager _jobsManager;
 
         public RecompressForm()
         {
+            _jobsManager = new();
+
             InitializeComponent();
             SetupSpecificColumnStyles();
         }
@@ -29,8 +19,8 @@ namespace Batch_Recompressor
             // Doing it via the designer causes it to auto-generate columns,
             // even with auto generate columns set to false..
             queueDataGrid.AutoGenerateColumns = false;
-            jobsBindingSource.DataMember = "Tasks";
-            jobsBindingSource.DataSource = typeof(QueuedTasksRelations);
+            jobsBindingSource.DataSource = _jobsManager;
+            jobsBindingSource.DataMember = "Jobs";
 
             DataGridViewCellStyle leftAligned = new()
             {
@@ -53,35 +43,29 @@ namespace Batch_Recompressor
         private void AddFileButton_Click(object sender, EventArgs e)
         {
             if (openFileDialog.ShowDialog() == DialogResult.OK)
-                foreach (string filePath in openFileDialog.FileNames)
-                    jobsBindingSource.Add(new RecompressTask(filePath));
+            {
+                _jobsManager.CreateTasks(openFileDialog.FileNames);
+                jobsBindingSource.ResetBindings(false);
+            }
         }
 
         private void HandleDragEnter(object sender, DragEventArgs e)
         {
-            if (e.Data is null)
-                return;
+            if (e.Data is not null)
+            {
+                e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) 
+                    ? DragDropEffects.All 
+                    : DragDropEffects.Copy;
+            }
 
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                e.Effect = DragDropEffects.All;
-            else
-                e.Effect = DragDropEffects.None;
         }
 
         private void HandleDragDrop(object sender, DragEventArgs e)
         {
-            if (e.Data is null)
-                return;
-
-            string[] paths = (string[])e.Data.GetData(DataFormats.FileDrop, false);
-            foreach (string path in paths)
+            if (e.Data is not null)
             {
-                string extension = Path.GetExtension(path);
-                if (string.IsNullOrEmpty(extension) ||
-                    !AllowedFileExtensions.Contains(extension))
-                    continue;
-
-                jobsBindingSource.Add(new RecompressTask(path));
+                _jobsManager.CreateTasks((string[]) e.Data.GetData(DataFormats.FileDrop, false));
+                jobsBindingSource.ResetBindings(false);
             }
         }
 
@@ -104,18 +88,39 @@ namespace Batch_Recompressor
             if (result == DialogResult.Cancel)
                 return;
 
-            foreach (DataGridViewRow row in queueDataGrid.SelectedRows)
-            {
-                RecompressTask job = (RecompressTask)row.DataBoundItem;
-                //if (result == DialogResult.Yes)
-                //    job.Delete();
+            // TO DO
 
-                jobsBindingSource.Remove(job);
-            }
+            //foreach (DataGridViewRow row in queueDataGrid.SelectedRows)
+            //{
+            //    RecompressTask job = (RecompressTask)row.DataBoundItem;
+            //    //if (result == DialogResult.Yes)
+            //    //    job.Delete();
+
+            //    jobsBindingSource.Remove(job);
+            //}
         }
 
         #endregion
 
+        private void StartButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                JobSettings settings = settingsPanel.GetCurrentSettings();
+                settings.Validate();
 
+                _jobsManager.Start(settings, new Progress<JobManagerStatus>((s) => jobsBindingSource.ResetBindings(false)
+                ));
+            }
+            catch (InvalidJobSettings exception) 
+            {
+                MessageBox.Show(
+                    exception.Message,
+                    "Invalid Settings",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Asterisk
+                );
+            }
+        }
     }
 }

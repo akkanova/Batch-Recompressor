@@ -24,7 +24,7 @@ namespace Batch_Recompressor.UI
 
         public ProgressBarCell()
         {
-            base.ValueType = typeof(Core.TaskStatus);
+            base.ValueType = typeof(JobStatus);
         }
 
         protected override object GetFormattedValue(
@@ -60,7 +60,7 @@ namespace Batch_Recompressor.UI
                 return;
 
             // Draw Simple Background Progress Bar
-            Core.TaskStatus status = (Core.TaskStatus) value;
+            JobStatus status = (JobStatus) value;
             if (status.Progress > 0)
                 graphics.FillRectangle(
                     new SolidBrush(ProgressBarColor),
@@ -71,8 +71,8 @@ namespace Batch_Recompressor.UI
                 );
 
             // Draw Text (Middle Center)
-            string text = status.State != TaskState.Ongoing
-                ? TaskStateToString(status.State)
+            string text = status.State != JobState.Ongoing
+                ? JobStateToString(status.State)
                 : status.Progress.ToString();
 
             Size textSize = TextRenderer.MeasureText(text, cellStyle.Font);
@@ -85,12 +85,12 @@ namespace Batch_Recompressor.UI
                 textPosX, textPosY);
         }
 
-        private static string TaskStateToString(TaskState state)
+        private static string JobStateToString(JobState state)
         {
             return state switch
             {
-                TaskState.FirstPass => "First Pass",
-                TaskState.SecondPass => "Second Pass",
+                JobState.FirstPass => "First Pass",
+                JobState.SecondPass => "Second Pass",
                 _ => state.ToString(),
             };
         }

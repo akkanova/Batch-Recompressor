@@ -1,4 +1,4 @@
-﻿namespace Batch_Recompressor.AllPurpose
+﻿namespace Batch_Recompressor.Common
 {
     internal class Misc
     {
