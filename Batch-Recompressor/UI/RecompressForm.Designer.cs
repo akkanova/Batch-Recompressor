@@ -1,5 +1,4 @@
-﻿using Batch_Recompressor.Core;
-using Batch_Recompressor.UI;
+﻿using Batch_Recompressor.UI;
 
 namespace Batch_Recompressor
 {
@@ -33,20 +32,22 @@ namespace Batch_Recompressor
         {
             components = new System.ComponentModel.Container();
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             queueDataGrid = new DataGridView();
-            pathDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             queueContextMenu = new ContextMenuStrip(components);
             removeToolStripMenuItem = new ToolStripMenuItem();
-            progressBarGridViewColumn = new ProgressBarColumn();
-            inputSizeDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            outputSizeDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             jobsBindingSource = new BindingSource(components);
             addFileButton = new Button();
             openFileDialog = new OpenFileDialog();
             settingsPanel = new SettingsPanel();
             startButton = new Button();
+            pathDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            progressBarColumn = new UI.DataGridColumns.ProgressBarColumn();
+            inputFileSizeColumn = new UI.DataGridColumns.FileSizeColumn();
+            ouputFileSizeColumn = new UI.DataGridColumns.FileSizeColumn();
             ((System.ComponentModel.ISupportInitialize)queueDataGrid).BeginInit();
             queueContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)jobsBindingSource).BeginInit();
@@ -75,29 +76,29 @@ namespace Batch_Recompressor
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             queueDataGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             queueDataGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            queueDataGrid.Columns.AddRange(new DataGridViewColumn[] { pathDataGridViewTextBoxColumn, progressBarGridViewColumn, inputSizeDataGridViewTextBoxColumn, outputSizeDataGridViewTextBoxColumn });
+            queueDataGrid.Columns.AddRange(new DataGridViewColumn[] { pathDataGridViewTextBoxColumn, progressBarColumn, inputFileSizeColumn, ouputFileSizeColumn });
             queueDataGrid.DataSource = jobsBindingSource;
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = SystemColors.Window;
-            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = SystemColors.GradientInactiveCaption;
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            queueDataGrid.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = SystemColors.Window;
+            dataGridViewCellStyle4.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle4.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = SystemColors.GradientInactiveCaption;
+            dataGridViewCellStyle4.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.False;
+            queueDataGrid.DefaultCellStyle = dataGridViewCellStyle4;
             queueDataGrid.EnableHeadersVisualStyles = false;
             queueDataGrid.Location = new Point(12, 12);
             queueDataGrid.Name = "queueDataGrid";
             queueDataGrid.ReadOnly = true;
             queueDataGrid.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = SystemColors.Control;
-            dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Control;
-            dataGridViewCellStyle3.SelectionForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
-            queueDataGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = SystemColors.Control;
+            dataGridViewCellStyle5.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle5.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle5.SelectionBackColor = SystemColors.Control;
+            dataGridViewCellStyle5.SelectionForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.True;
+            queueDataGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle5;
             queueDataGrid.RowHeadersVisible = false;
             queueDataGrid.RowHeadersWidth = 62;
             queueDataGrid.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
@@ -113,16 +114,6 @@ namespace Batch_Recompressor
             queueDataGrid.DragDrop += HandleDragDrop;
             queueDataGrid.DragEnter += HandleDragEnter;
             // 
-            // pathDataGridViewTextBoxColumn
-            // 
-            pathDataGridViewTextBoxColumn.ContextMenuStrip = queueContextMenu;
-            pathDataGridViewTextBoxColumn.DataPropertyName = "Path";
-            pathDataGridViewTextBoxColumn.FillWeight = 30F;
-            pathDataGridViewTextBoxColumn.HeaderText = "Path";
-            pathDataGridViewTextBoxColumn.MinimumWidth = 8;
-            pathDataGridViewTextBoxColumn.Name = "pathDataGridViewTextBoxColumn";
-            pathDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
             // queueContextMenu
             // 
             queueContextMenu.ImageScalingSize = new Size(24, 24);
@@ -136,38 +127,6 @@ namespace Batch_Recompressor
             removeToolStripMenuItem.Size = new Size(148, 32);
             removeToolStripMenuItem.Text = "Remove";
             removeToolStripMenuItem.Click += RemoveSelectedJobs;
-            // 
-            // progressBarGridViewColumn
-            // 
-            progressBarGridViewColumn.ContextMenuStrip = queueContextMenu;
-            progressBarGridViewColumn.DataPropertyName = "Status";
-            progressBarGridViewColumn.FillWeight = 30F;
-            progressBarGridViewColumn.HeaderText = "Progress";
-            progressBarGridViewColumn.MinimumWidth = 8;
-            progressBarGridViewColumn.Name = "progressBarGridViewColumn";
-            progressBarGridViewColumn.ReadOnly = true;
-            // 
-            // inputSizeDataGridViewTextBoxColumn
-            // 
-            inputSizeDataGridViewTextBoxColumn.ContextMenuStrip = queueContextMenu;
-            inputSizeDataGridViewTextBoxColumn.DataPropertyName = "InputFileSize";
-            inputSizeDataGridViewTextBoxColumn.FillWeight = 20F;
-            inputSizeDataGridViewTextBoxColumn.HeaderText = "Input Size";
-            inputSizeDataGridViewTextBoxColumn.MinimumWidth = 8;
-            inputSizeDataGridViewTextBoxColumn.Name = "inputSizeDataGridViewTextBoxColumn";
-            inputSizeDataGridViewTextBoxColumn.ReadOnly = true;
-            inputSizeDataGridViewTextBoxColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
-            // 
-            // outputSizeDataGridViewTextBoxColumn
-            // 
-            outputSizeDataGridViewTextBoxColumn.ContextMenuStrip = queueContextMenu;
-            outputSizeDataGridViewTextBoxColumn.DataPropertyName = "OutputFileSize";
-            outputSizeDataGridViewTextBoxColumn.FillWeight = 20F;
-            outputSizeDataGridViewTextBoxColumn.HeaderText = "Output Size";
-            outputSizeDataGridViewTextBoxColumn.MinimumWidth = 8;
-            outputSizeDataGridViewTextBoxColumn.Name = "outputSizeDataGridViewTextBoxColumn";
-            outputSizeDataGridViewTextBoxColumn.ReadOnly = true;
-            outputSizeDataGridViewTextBoxColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
             // 
             // addFileButton
             // 
@@ -205,6 +164,54 @@ namespace Batch_Recompressor
             startButton.UseVisualStyleBackColor = true;
             startButton.Click += StartButton_Click;
             // 
+            // pathDataGridViewTextBoxColumn
+            // 
+            pathDataGridViewTextBoxColumn.ContextMenuStrip = queueContextMenu;
+            pathDataGridViewTextBoxColumn.DataPropertyName = "Path";
+            pathDataGridViewTextBoxColumn.FillWeight = 30F;
+            pathDataGridViewTextBoxColumn.HeaderText = "Path";
+            pathDataGridViewTextBoxColumn.MinimumWidth = 8;
+            pathDataGridViewTextBoxColumn.Name = "pathDataGridViewTextBoxColumn";
+            pathDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // progressBarColumn
+            // 
+            progressBarColumn.ContextMenuStrip = queueContextMenu;
+            progressBarColumn.DataPropertyName = "Status";
+            progressBarColumn.FillWeight = 30F;
+            progressBarColumn.HeaderText = "Progress";
+            progressBarColumn.MinimumWidth = 8;
+            progressBarColumn.Name = "progressBarColumn";
+            progressBarColumn.ReadOnly = true;
+            // 
+            // inputFileSizeColumn
+            // 
+            inputFileSizeColumn.ContextMenuStrip = queueContextMenu;
+            inputFileSizeColumn.DataPropertyName = "InputFileSize";
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle2.Padding = new Padding(0, 0, 2, 0);
+            inputFileSizeColumn.DefaultCellStyle = dataGridViewCellStyle2;
+            inputFileSizeColumn.FillWeight = 20F;
+            inputFileSizeColumn.HeaderText = "Input Size";
+            inputFileSizeColumn.MinimumWidth = 8;
+            inputFileSizeColumn.Name = "inputFileSizeColumn";
+            inputFileSizeColumn.ReadOnly = true;
+            inputFileSizeColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            // 
+            // ouputFileSizeColumn
+            // 
+            ouputFileSizeColumn.ContextMenuStrip = queueContextMenu;
+            ouputFileSizeColumn.DataPropertyName = "OutputFileSize";
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle3.Padding = new Padding(0, 0, 2, 0);
+            ouputFileSizeColumn.DefaultCellStyle = dataGridViewCellStyle3;
+            ouputFileSizeColumn.FillWeight = 20F;
+            ouputFileSizeColumn.HeaderText = "Output Size";
+            ouputFileSizeColumn.MinimumWidth = 8;
+            ouputFileSizeColumn.Name = "ouputFileSizeColumn";
+            ouputFileSizeColumn.ReadOnly = true;
+            ouputFileSizeColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            // 
             // RecompressForm
             // 
             AllowDrop = true;
@@ -236,8 +243,8 @@ namespace Batch_Recompressor
         private UI.SettingsPanel settingsPanel;
         private Button startButton;
         private DataGridViewTextBoxColumn pathDataGridViewTextBoxColumn;
-        private ProgressBarColumn progressBarGridViewColumn;
-        private DataGridViewTextBoxColumn inputSizeDataGridViewTextBoxColumn;
-        private DataGridViewTextBoxColumn outputSizeDataGridViewTextBoxColumn;
+        private UI.DataGridColumns.ProgressBarColumn progressBarColumn;
+        private UI.DataGridColumns.FileSizeColumn inputFileSizeColumn;
+        private UI.DataGridColumns.FileSizeColumn ouputFileSizeColumn;
     }
 }

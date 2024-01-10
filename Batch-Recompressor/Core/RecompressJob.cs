@@ -1,7 +1,4 @@
-﻿using Batch_Recompressor.Common;
-using Xabe.FFmpeg;
-
-namespace Batch_Recompressor.Core
+﻿namespace Batch_Recompressor.Core
 {
     public enum JobState
     {
@@ -22,14 +19,14 @@ namespace Batch_Recompressor.Core
 
     public class RecompressJob
     {
-        private readonly ulong _inputFileSize;
-        private readonly ulong _outputFileSize;
+        private ulong _inputFileSize;
+        private ulong _outputFileSize;
         private readonly object _lock;
         
         public RecompressJob(string path)
         {
-            _inputFileSize = (ulong) new FileInfo(path).Length;
-            _lock = new object();
+            _inputFileSize = (ulong)new FileInfo(path).Length;
+            _lock  = new();
             Status = new();
             Path = path;
         }
@@ -38,24 +35,32 @@ namespace Batch_Recompressor.Core
         public JobStatus Status { get; }
         public string Path { get; }
 
-
-        public string InputFileSize
-        {
-            get 
-            { 
+        public ulong InputFileSize {
+            get
+            {
                 lock (_lock)
-                    return Misc.FileSizeToString(_inputFileSize);
+                    return _inputFileSize;
+            }
+
+            private set
+            {
+                lock (_lock)
+                    _inputFileSize = value;
             }
         }
 
-        public string OutputFileSize
+        public ulong OutputFileSize
         {
             get
             {
                 lock (_lock)
-                    return _outputFileSize != 0
-                        ? Misc.FileSizeToString(_outputFileSize)
-                        : string.Empty;
+                    return _outputFileSize;
+            }
+
+            private set
+            {
+                lock (_lock)
+                    _outputFileSize = value;
             }
         }
 
@@ -64,6 +69,7 @@ namespace Batch_Recompressor.Core
             CancellationToken token = default, 
             IProgress<JobStatus>? progress = null
         ) {
+
         }
     }
 }

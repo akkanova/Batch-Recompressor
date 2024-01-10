@@ -1,6 +1,6 @@
 ﻿namespace Batch_Recompressor.Common
 {
-    internal class Misc
+    public class Misc
     {
         public static string FileSizeToString(ulong fileSizeBytes)
         {

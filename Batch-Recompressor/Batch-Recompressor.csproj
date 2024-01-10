@@ -10,11 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Xabe.FFmpeg" Version="5.2.6" />
-    <PackageReference Include="Xabe.FFmpeg.Downloader" Version="5.2.6" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Properties\DataSources\" />
   </ItemGroup>
 

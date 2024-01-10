@@ -1,9 +1,9 @@
 ﻿using Batch_Recompressor.Core;
 using System.ComponentModel;
 
-namespace Batch_Recompressor.UI
+namespace Batch_Recompressor.UI.DataGridColumns
 {
-    internal class ProgressBarColumn : DataGridViewColumn
+    public class ProgressBarColumn : DataGridViewColumn
     {
         public ProgressBarColumn()
         {
@@ -11,7 +11,7 @@ namespace Batch_Recompressor.UI
         }
     }
 
-    internal class ProgressBarCell : DataGridViewImageCell
+    public class ProgressBarCell : DataGridViewImageCell
     {
         public static Color ProgressBarColor { get; }
         public static Image EmptyImage { get; }

@@ -29,12 +29,14 @@ namespace Batch_Recompressor.Core
         public bool IsRunning                     { get; private set; }
 
         private readonly CancellationTokenSource _cancellationTokenSource;
+        private readonly object _lock;
 
         public JobsManager()
         {
             _cancellationTokenSource = new();
+            _lock  = new();
             Status = new();
-            Jobs = new();
+            Jobs   = new();
         }
 
         public void CreateTasks(string[] paths)
@@ -51,48 +53,55 @@ namespace Batch_Recompressor.Core
             JobSettings settings, 
             IProgress<JobManagerStatus>? managerProgress = null
         ) {
-            if (!IsRunning)
+            lock (_lock)
             {
-                IsRunning = true;
-                CurrentJobSettings = settings.Clone();
-                Task.Run(RunExecutionLoop, _cancellationTokenSource.Token);
-            }
-
-            async Task RunExecutionLoop()
-            {
-                Progress<JobStatus> jobProgress = new((jobStatus) => {
-                    Status.CurrentJobStatus = jobStatus;
-                    managerProgress?.Report(Status);
-                });
-
-                while (!_cancellationTokenSource.IsCancellationRequested)
+                if (!IsRunning)
                 {
-                    var queuedTask = Jobs
-                        .Where(job => job.Status.State == JobState.Queued)
-                        .First();
-
-                    if (queuedTask == null)
-                        break;
-
-                    await queuedTask.Run(
-                        CurrentJobSettings, 
-                        _cancellationTokenSource.Token,
-                        jobProgress
-                    );
-
-                    Status.TotalJobs = Jobs.Count;
-                    Status.JobsCompleted++;
+                    IsRunning = true;
+                    CurrentJobSettings = settings.Clone();
+                    Task.Run(
+                        () => RunExecutionLoop(managerProgress), 
+                        _cancellationTokenSource.Token);
                 }
-
-                CurrentJobSettings = null;
-                IsRunning = false;
             }
         }
 
-        public void Stop() 
-        { 
-            if (IsRunning)
-                _cancellationTokenSource.Cancel();
+        private async Task RunExecutionLoop(IProgress<JobManagerStatus>? managerProgress = null) 
+        {
+            Progress<JobStatus> jobProgress = new((jobStatus) => {
+                Status.CurrentJobStatus = jobStatus;
+                managerProgress?.Report(Status);
+            });
+
+            while (!_cancellationTokenSource.IsCancellationRequested)
+            {
+                var queuedJob = Jobs
+                    .Where(job => job.Status.State == JobState.Queued)
+                    .First();
+
+                if (queuedJob is null)
+                    break;
+
+                await queuedJob.Run(
+                    CurrentJobSettings!,
+                    _cancellationTokenSource.Token,
+                    jobProgress);
+
+                Status.TotalJobs = Jobs.Count;
+                Status.JobsCompleted++;
+            }
+
+            CurrentJobSettings = null;
+            IsRunning = false;
+        }
+
+        public void Stop()
+        {
+            lock (_lock)
+            {
+                if (IsRunning)
+                    _cancellationTokenSource.Cancel();
+            }
         }
     }
 }

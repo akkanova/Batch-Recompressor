@@ -11,10 +11,10 @@ namespace Batch_Recompressor
             _jobsManager = new();
 
             InitializeComponent();
-            SetupSpecificColumnStyles();
+            SetupAdditionalComponents();
         }
 
-        private void SetupSpecificColumnStyles()
+        private void SetupAdditionalComponents()
         {
             // Doing it via the designer causes it to auto-generate columns,
             // even with auto generate columns set to false..
@@ -22,20 +22,10 @@ namespace Batch_Recompressor
             jobsBindingSource.DataSource = _jobsManager;
             jobsBindingSource.DataMember = "Jobs";
 
-            DataGridViewCellStyle leftAligned = new()
+            pathDataGridViewTextBoxColumn.DefaultCellStyle = new()
             {
                 Alignment = DataGridViewContentAlignment.MiddleLeft
             };
-
-            DataGridViewCellStyle rightAligned = new()
-            {
-                Alignment = DataGridViewContentAlignment.MiddleRight,
-                Padding = new Padding(0, 0, 2, 0)
-            };
-
-            pathDataGridViewTextBoxColumn.DefaultCellStyle = leftAligned;
-            inputSizeDataGridViewTextBoxColumn.DefaultCellStyle = rightAligned;
-            outputSizeDataGridViewTextBoxColumn.DefaultCellStyle = rightAligned;
         }
 
         #region Create FFmpeg Jobs
@@ -53,8 +43,8 @@ namespace Batch_Recompressor
         {
             if (e.Data is not null)
             {
-                e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) 
-                    ? DragDropEffects.All 
+                e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop)
+                    ? DragDropEffects.All
                     : DragDropEffects.Copy;
             }
 
@@ -64,7 +54,7 @@ namespace Batch_Recompressor
         {
             if (e.Data is not null)
             {
-                _jobsManager.CreateTasks((string[]) e.Data.GetData(DataFormats.FileDrop, false));
+                _jobsManager.CreateTasks((string[])e.Data.GetData(DataFormats.FileDrop, false));
                 jobsBindingSource.ResetBindings(false);
             }
         }
@@ -112,7 +102,7 @@ namespace Batch_Recompressor
                 _jobsManager.Start(settings, new Progress<JobManagerStatus>((s) => jobsBindingSource.ResetBindings(false)
                 ));
             }
-            catch (InvalidJobSettings exception) 
+            catch (InvalidJobSettings exception)
             {
                 MessageBox.Show(
                     exception.Message,
