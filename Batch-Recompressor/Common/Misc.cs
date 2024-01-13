@@ -16,5 +16,10 @@
 
             return string.Format("{0:0.##} {1}", size, suffixes[order]);
         }
+
+        public static string? ConvertToNullIfEmpty(string input)
+        {
+            return string.IsNullOrWhiteSpace(input) ? null : input.Trim();
+        }
     }
 }

@@ -30,7 +30,13 @@ namespace Batch_Recompressor.UI.DataGridColumns
             base.ValueType = typeof(ulong);
         }
 
-        protected override object GetFormattedValue(object value, int rowIndex, ref DataGridViewCellStyle cellStyle, TypeConverter valueTypeConverter, TypeConverter formattedValueTypeConverter, DataGridViewDataErrorContexts context)
+        protected override object GetFormattedValue(
+            object value, 
+            int rowIndex, 
+            ref DataGridViewCellStyle cellStyle, 
+            TypeConverter valueTypeConverter, 
+            TypeConverter formattedValueTypeConverter, 
+            DataGridViewDataErrorContexts context) 
         {
             if (value is ulong fileSize)
                 return fileSize != 0 

@@ -1,17 +1,27 @@
 using Batch_Recompressor.Core;
+using Batch_Recompressor.UI;
 
 namespace Batch_Recompressor
 {
     public partial class RecompressForm : Form
     {
+        #region Constructor
+
+        private readonly Progress<JobManagerStatus> _jobsManagerProgress;
         private readonly JobsManager _jobsManager;
 
         public RecompressForm()
         {
             _jobsManager = new();
+            _jobsManagerProgress = new(
+                (s) => jobsBindingSource.ResetBindings(false)
+            );
 
             InitializeComponent();
             SetupAdditionalComponents();
+
+            var a = new ExecutablesSelectionForm();
+            a.ShowDialog(this);
         }
 
         private void SetupAdditionalComponents()
@@ -28,7 +38,8 @@ namespace Batch_Recompressor
             };
         }
 
-        #region Create FFmpeg Jobs
+        #endregion
+        #region Create Recompress Jobs
 
         private void AddFileButton_Click(object sender, EventArgs e)
         {
@@ -60,7 +71,7 @@ namespace Batch_Recompressor
         }
 
         #endregion
-        #region Edit FFmpeg Jobs
+        #region Edit Existing Recompress Jobs
 
         private void RemoveSelectedJobs(object sender, EventArgs e)
         {
@@ -99,8 +110,7 @@ namespace Batch_Recompressor
                 JobSettings settings = settingsPanel.GetCurrentSettings();
                 settings.Validate();
 
-                _jobsManager.Start(settings, new Progress<JobManagerStatus>((s) => jobsBindingSource.ResetBindings(false)
-                ));
+                _jobsManager.Start(settings, _jobsManagerProgress);
             }
             catch (InvalidJobSettings exception)
             {

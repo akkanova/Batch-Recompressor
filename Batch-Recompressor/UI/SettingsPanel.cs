@@ -1,9 +1,12 @@
-﻿using Batch_Recompressor.Core;
+﻿using Batch_Recompressor.Common;
+using Batch_Recompressor.Core;
 
 namespace Batch_Recompressor.UI
 {
     public partial class SettingsPanel : UserControl
     {
+        #region Constructor
+
         public SettingsPanel()
         {
             InitializeComponent();
@@ -12,23 +15,22 @@ namespace Batch_Recompressor.UI
 
         private void SetupDefaultValues()
         {
-            videoCodecSelection.SelectedIndex       = 0;
-            videoContainerSelection.SelectedIndex   = 0;
+            videoCodecSelection.SelectedIndex = 0;
+            videoContainerSelection.SelectedIndex = 0;
             videoBitrateModeSelection.SelectedIndex = 0;
-            audioCodecSelection.SelectedIndex       = 0;
-            outputOverwriteSelection.SelectedIndex  = 0;
-            outputFolderInput.SelectedText = JobSettings.DefaultOutputFolder;
+            audioCodecSelection.SelectedIndex = 0;
+            outputOverwriteSelection.SelectedIndex = 0;
+            outputFolderInput.SelectedText = GlobalSettings.Instance.DefaultOutputDirectory;
         }
+
+        #endregion
 
         public JobSettings GetCurrentSettings()
         {
-            static string? ConvertToNullIfEmptyOrWhiteSpace(string input) =>
-                string.IsNullOrWhiteSpace(input) ? null : input;
-
             return new JobSettings()
             {
                 // Preprocess
-                PreprocessCommand = ConvertToNullIfEmptyOrWhiteSpace(preprocessInput.Text),
+                PreprocessCommand = Misc.ConvertToNullIfEmpty(preprocessInput.Text),
 
                 // Video Codec Settings
                 VideoCodec            = (VideoCodec) videoCodecSelection.SelectedIndex,
@@ -43,13 +45,13 @@ namespace Batch_Recompressor.UI
 
                 // Custom Arguments
                 CustomArgument = customArgumentsCheckBox.Checked
-                    ? ConvertToNullIfEmptyOrWhiteSpace(customArgumentsInput.Text) : null,
+                    ? Misc.ConvertToNullIfEmpty(customArgumentsInput.Text) : null,
 
                 // Output
-                OutputFolder = outputFolderInput.Text,
+                OutputDirectory = outputFolderInput.Text,
 
                 // Postprocess
-                PostprocessCommand = ConvertToNullIfEmptyOrWhiteSpace(postprocessInput.Text),
+                PostprocessCommand = Misc.ConvertToNullIfEmpty(postprocessInput.Text),
             };
         }
 

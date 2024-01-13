@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+﻿ using System.Text.RegularExpressions;
 
 namespace Batch_Recompressor.Core
 {
@@ -26,12 +26,6 @@ namespace Batch_Recompressor.Core
 
     public class JobSettings
     {
-        public static string DefaultOutputFolder { get; } 
-
-        static JobSettings() {
-            DefaultOutputFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
-        }
-
         public string? PreprocessCommand  { get; set; }
         public VideoCodec VideoCodec      { get; set; }
         public bool UseTwoPassEncode      { get; set; }
@@ -42,11 +36,11 @@ namespace Batch_Recompressor.Core
         public uint AudioBitrate          { get; set; }
         public string? CustomArgument     { get; set; }
         public string? PostprocessCommand { get; set; }
-        public string OutputFolder        { get; set; }
+        public string OutputDirectory     { get; set; }
 
         public JobSettings()
         {
-            OutputFolder = DefaultOutputFolder;
+            OutputDirectory = GlobalSettings.Instance.DefaultOutputDirectory;
             ShrinkFactor = 1.0;
         }
 
